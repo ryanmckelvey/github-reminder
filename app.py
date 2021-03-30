@@ -9,8 +9,8 @@ from email_service import emailService
 
 app = fl(__name__)
 
-github_auth = "AUTH TOKEN HERE"
-# github_auth = "Your Github PAT here"
+
+github_auth = "Your Github PAT here"
 
 
 headers = {"Authorization": github_auth}
@@ -91,23 +91,24 @@ def latest_pushedAt(dates):
 # Function for compiling email body and sending email.
 
 
-def email_send(viewer, date):
+def email_send(viewer, dte):
     message = """\
-    Subject: Hey {}
+    Hey {}\n\n
+    GitHub Reminder
 
     Your last push was on {}, get to work!!
-  """.format(viewer,date)
+  """.format(viewer,dte)
+    #if dte < datetime.date.today():
     em.send_email(message)
 
 
 @app.route('/')
-def main_method():
+def main_function():
     result = resolve(viewer_query)  # Execute the viewer query
     viewerName = result['viewer']['login']
     repoList = result['viewer']['repositories']['edges']
     repoNames = extract_repos_from_list(repoList)
     latestPushedAt = check_repo(repoNames, viewerName)
-    print("Email send is hanging")
     email_send(viewerName, latestPushedAt)
     return "OK"
 
