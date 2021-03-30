@@ -8,10 +8,10 @@
 - An install of Python 3 and Pip
 
 ## 🛠Set Up🛠
--To get the required packages run `pip install -r requirements.txt`
--In `app.py`, replace the placeholder PAT with your own
--In `email_service.py` replace sender_email, receiver_email, and password with your own
--To run the flask app locally, navigate to the `github-reminder` folder in terminal and type `flask run`
+- To get the required packages run `pip install -r requirements.txt`
+- In `app.py`, replace the placeholder PAT with your own
+- In `email_service.py` replace sender_email, receiver_email, and password with your own
+- To run the flask app locally, navigate to the `github-reminder` folder in terminal and type `flask run`
 
 ## 🕹Interaction🕹
 Go to localhost:5000 and that's all for now. An email will be sent to your reciever email from your sender email if you've not pushed any commits today!
