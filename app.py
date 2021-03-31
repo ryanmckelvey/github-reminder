@@ -10,7 +10,7 @@ from email_service import emailService
 app = fl(__name__)
 
 
-github_auth = "Your Github PAT here"
+github_auth = "Bearer YOUR GIT PAT HERE"
 
 
 headers = {"Authorization": github_auth}
@@ -28,10 +28,13 @@ viewer_query = gql("""
 query{
   viewer{
     login
-    repositories(privacy: PUBLIC, first: 100, after: "BOUNDARY CURSOR HERE") {
+    repositories(privacy: PUBLIC, first: 100) {
       edges {
         node {
           name
+          owner{
+            login
+          }
         }
       }
     }
@@ -61,9 +64,10 @@ def resolve(query, **params):
 
 
 # Function to get a string list of repository names for querying
-def extract_repos_from_list(Lst):
+def extract_repos_from_list(Lst,viewer):
     simplified_list = []
     for node in Lst:
+      if node['node']['owner']['login'] == viewer:
         simplified_list.append(node['node']['name'])
     return simplified_list
 
@@ -98,8 +102,8 @@ def email_send(viewer, dte):
 
     Your last push was on {}, get to work!!
   """.format(viewer,dte)
-    #if dte < datetime.date.today():
-    em.send_email(message)
+    if dte < datetime.date.today():
+      em.send_email(message)
 
 
 @app.route('/')
@@ -107,7 +111,7 @@ def main_function():
     result = resolve(viewer_query)  # Execute the viewer query
     viewerName = result['viewer']['login']
     repoList = result['viewer']['repositories']['edges']
-    repoNames = extract_repos_from_list(repoList)
+    repoNames = extract_repos_from_list(repoList,viewerName)
     latestPushedAt = check_repo(repoNames, viewerName)
     email_send(viewerName, latestPushedAt)
     return "OK"
