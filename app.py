@@ -111,7 +111,3 @@ def main_function():
     latestPushedAt = check_repo(repoNames, viewerName)
     email_send(viewerName, latestPushedAt)
     return "OK"
-
-
-if __name__ == "___main___":
-    app.run(debug=True)
