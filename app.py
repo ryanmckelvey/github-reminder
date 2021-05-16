@@ -4,15 +4,16 @@ import datetime
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 from flask import Flask as fl
+from flask import request
 from email_service import emailService
 
 
 app = fl(__name__)
 
 
-github_auth = "Bearer YOUR GIT PAT HERE"
+github_auth = "Bearer YOUR GIT AUTH HERE"
 
-
+auth = "auth_param"
 headers = {"Authorization": github_auth}
 
 # Gql setup
@@ -108,10 +109,13 @@ def email_send(viewer, dte):
 
 @app.route('/')
 def main_function():
-    result = resolve(viewer_query)  # Execute the viewer query
-    viewerName = result['viewer']['login']
-    repoList = result['viewer']['repositories']['edges']
-    repoNames = extract_repos_from_list(repoList,viewerName)
-    latestPushedAt = check_repo(repoNames, viewerName)
-    email_send(viewerName, latestPushedAt)
-    return "OK"
+    if(request.args.get('key') == auth):
+      result = resolve(viewer_query)  # Execute the viewer query
+      viewerName = result['viewer']['login']
+      repoList = result['viewer']['repositories']['edges']
+      repoNames = extract_repos_from_list(repoList,viewerName)
+      latestPushedAt = check_repo(repoNames, viewerName)
+      email_send(viewerName, latestPushedAt)
+      return "OK"
+    else:
+      return "invalid"
