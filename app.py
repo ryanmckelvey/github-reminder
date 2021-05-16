@@ -11,7 +11,7 @@ from email_service import emailService
 app = fl(__name__)
 
 
-github_auth = "Bearer YOUR GIT AUTH HERE"
+github_auth = "Bearer YOUR GIT PAT HERE"
 
 auth = "auth_param"
 headers = {"Authorization": github_auth}
